@@ -25,7 +25,6 @@ def get_all():
     mapa = {'groups': []}
 
     for name in tables:
-        print(name[0] == 'info')
         if name[0] != 'info':
             data = get_users_from_db(db_name=f'databases/{request.args["table_name"]}.db', table_name=name[0])
             all_sportsmans.append(data)
@@ -34,11 +33,11 @@ def get_all():
     return mapa
 
 
-@app.route('/create-table', methods = ['POST'])
+@app.route('/create-table', methods=['POST'])
 def create_table():
     file = request.files['protocol']
     print(file.filename)
-    file.save(f"protocols/{file.filename}.xlsx")
+    file.save(f"protocols/{file.filename}")
     table_converter.read_table(request.form.get('table_name'), file.filename, request.form.get('date'))
     return 'Success'
 
@@ -63,22 +62,6 @@ def get_group():
     print(1)
     # group = get_group_model(suffix=request.args.get('group_name')).query.all()
     # return groups_schema.dump(group)
-
-
-@app.route('/get-sportsman')
-def get_sportsman():
-    global group
-    conn = sqlite3.connect('databases/Startovy_protokol_25_12_2022.db')
-    cursor = conn.cursor()
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    tables = cursor.fetchall()
-    # for name in tables:
-    #     group = get_group_model(suffix=name[0]).query.filter(
-    #         get_group_model(suffix=name[0]).startNumber == request.args.get('start_number')).one_or_none()
-    #     if group:
-    #         return group_schema.dump(group)
-
-    return 'Not Found'
 
 
 @app.route('/finish', methods=['POST'])
@@ -115,8 +98,30 @@ def get_list_tournaments():
     return ready_model
 
 
+@app.route('/start-tournament')
+def start_tournament():
+    conn = sqlite3.connect(f'databases/{request.args["table_name"]}.db')
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
+    dateformat = '%H:%M:%S'
+    for name in tables:
+        if name[0] != 'info':
+            data = get_users_from_db(db_name=f'databases/{request.args["table_name"]}.db', table_name=name[0])
+            for user in data:
+                newStartTime = datetime.strptime(request.args['startTime'], dateformat)
+                userTime = datetime.strptime(user['startTime'], dateformat)
+                newTime = datetime(year=userTime.year, month=userTime.month, day=userTime.day, hour=newStartTime.hour,
+                                   minute=newStartTime.minute + userTime.minute,
+                                   second=newStartTime.second + userTime.second)
+                startTime = str(datetime.strftime(newTime, dateformat))
+                cursor.execute(f"UPDATE {name[0]} SET startTime = ? WHERE startNumber = ?", (startTime,
+                                                                                             user['startNumber']))
+                conn.commit()
+
+    conn.close()
+    return 'Success!'
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=8080, debug=True)
-
-
