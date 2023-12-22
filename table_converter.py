@@ -31,7 +31,7 @@ def read_table(table_name, file_name, date):
     name = ''
     for row in my_list:
         if str(row[0]).startswith('Д') or str(row[0]).startswith('С') or str(row[0]).startswith('Ю') or str(
-                row[0]).startswith('М') or row[0] is None:
+                row[0]).startswith('М') or str(row[0]).startswith('Ж') or row[0] is None:
             for elem in list_of_tables:
                 if elem == str(row[0]):
                     name = elem
@@ -41,7 +41,13 @@ def read_table(table_name, file_name, date):
                 "place) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").format(name=name.replace(' ',
                                                                                         '').split(
                 'г')[0].replace('-', ''))
-
+            print (row[0])
+            print (row[1])
+            print (row[2])
+            print (row[3])
+            print (row[4])
+            print (row[5])
+            print (row[8])
             conn.cursor().execute(query, (
                 row[0], row[0], row[1], row[2], row[3],
                 str(row[4]), row[5], None, None, row[8]))
