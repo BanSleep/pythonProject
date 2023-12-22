@@ -119,7 +119,7 @@ def finishTournament():
             data = get_users_from_db(db_name=f'databases/{request.args["table_name"]}.db', table_name=name[0])
             all_sportsmans.append(data)
             for user in data:
-                if user['finishTime'] is None:
+                if user['result'] is None:
                     cursor.execute(f"UPDATE {name[0]} SET finishTime = ? WHERE startNumber = ?", ("Н/С", user['startNumber']))
                     conn.commit()
         else:
