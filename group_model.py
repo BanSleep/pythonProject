@@ -46,7 +46,7 @@ def get_users_from_db(db_name, table_name):
     engine = create_engine(db_url)
     Session = sessionmaker(bind=engine)
     session = Session()
-    if (table_name != 'info'):
+    if table_name != 'info':
         users = session.query(getModel(table_name)).all()
         user_schema = GroupSchema(many=True)
         serialized_users = user_schema.dump(users)

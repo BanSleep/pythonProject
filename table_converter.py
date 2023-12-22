@@ -41,16 +41,9 @@ def read_table(table_name, file_name, date):
                 "place) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").format(name=name.replace(' ',
                                                                                         '').split(
                 'г')[0].replace('-', ''))
-            print (row[0])
-            print (row[1])
-            print (row[2])
-            print (row[3])
-            print (row[4])
-            print (row[5])
-            print (row[8])
             conn.cursor().execute(query, (
                 row[0], row[0], row[1], row[2], row[3],
-                str(row[4]), row[5], None, None, row[8]))
+                str(row[4]), row[5], None, None, None))
             conn.commit()
 
     # param = '00:02:00'
