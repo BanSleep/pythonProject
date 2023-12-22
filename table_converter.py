@@ -23,9 +23,10 @@ def read_table(table_name, file_name, date):
     conn.cursor().execute("""CREATE TABLE IF NOT EXISTS info (
            id INTEGER NOT NULL,
            date TEXT NOT NULL,
+           status INTEGER NOT NULL,
            PRIMARY KEY(id));""")
     conn.commit()
-    conn.cursor().execute("INSERT INTO info (id, date) VALUES(?, ?)", (0, date))
+    conn.cursor().execute("INSERT INTO info (id, date, status) VALUES(?, ?, ?)", (0, date, 0))
     conn.commit()
     name = ''
     for row in my_list:

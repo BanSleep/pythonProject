@@ -98,6 +98,29 @@ def get_list_tournaments():
     return ready_model
 
 
+@app.route('/finish-tournament')
+def finishTournament():
+    conn = sqlite3.connect(f"databases/{request.args['table_name']}.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
+    tables = cursor.fetchall()
+    all_sportsmans = list()
+
+    for name in tables:
+        if name[0] != 'info':
+            data = get_users_from_db(db_name=f'databases/{request.args["table_name"]}.db', table_name=name[0])
+            all_sportsmans.append(data)
+            for user in data:
+                if user['finishTime'] is None:
+                    cursor.execute(f"UPDATE {name[0]} SET finishTime = ? WHERE startNumber = ?", ("Н/С", user['startNumber']))
+                    conn.commit()
+        else:
+            cursor.execute(f"UPDATE {name[0]} SET status = 2")
+            conn.commit()
+    conn.close()
+    return 'Success!'
+
+
 @app.route('/start-tournament')
 def start_tournament():
     conn = sqlite3.connect(f'databases/{request.args["table_name"]}.db')
@@ -118,7 +141,9 @@ def start_tournament():
                 cursor.execute(f"UPDATE {name[0]} SET startTime = ? WHERE startNumber = ?", (startTime,
                                                                                              user['startNumber']))
                 conn.commit()
-
+        else:
+            cursor.execute(f"UPDATE {name[0]} SET status = 1")
+            conn.commit()
     conn.close()
     return 'Success!'
 
