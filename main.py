@@ -3,7 +3,7 @@ import sqlite3
 import config
 from config import basedir
 import table_converter
-from datetime import datetime
+from datetime import datetime, timedelta
 # from group_model import get_group_model, group_schema, groups_schema
 from flask import render_template, request
 from sqlalchemy import create_engine, Column, Integer, String
@@ -143,9 +143,13 @@ def start_tournament():
                 newStartTime = datetime.strptime(request.args['startTime'], dateformat)
                 userTime = datetime.strptime(user['startTime'], dateformat)
                 newTime = datetime(year=userTime.year, month=userTime.month, day=userTime.day, hour=newStartTime.hour,
-                                   minute=newStartTime.minute + userTime.minute,
-                                   second=newStartTime.second + userTime.second)
-                startTime = str(datetime.strftime(newTime, dateformat))
+                                   minute=newStartTime.minute,
+                                   second=newStartTime.second)
+                userMinutes = userTime.minute * 60
+                addSeconds = userMinutes + userTime.second
+                print(addSeconds)
+                b = newTime + timedelta(0, addSeconds)
+                startTime = str(datetime.strftime(b, dateformat))
                 cursor.execute(f"UPDATE {name[0]} SET startTime = ? WHERE startNumber = ?", (startTime,
                                                                                              user['startNumber']))
                 conn.commit()
