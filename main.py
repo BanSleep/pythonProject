@@ -41,6 +41,14 @@ def create_table():
     table_converter.read_table(request.form.get('table_name'), file.filename, request.form.get('date'))
     return 'Success'
 
+@app.route('/get-tournament-info')
+def get_tournament_info():
+    conn = sqlite3.connect(f'databases/{request.args.get("table_name")}.db')
+    cursor = conn.cursor()
+    cursor.execute('SELECT status FROM info')
+    status = cursor.fetchall()
+    return status
+
 
 @app.route('/get-table-names')
 def get_table_names():
