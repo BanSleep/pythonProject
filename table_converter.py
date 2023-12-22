@@ -15,7 +15,7 @@ def read_table(table_name, file_name, date):
             values_only=True):
         my_list.append(value)
     for i in range(0, len(rows)):
-        if str(rows[i]).startswith('М') or str(rows[i]).startswith('Д') or str(rows[i]).startswith('Ю'):
+        if str(rows[i]).startswith('М') or str(rows[i]).startswith('Д') or str(rows[i]).startswith('Ю') or str(rows[i]).startswith('Ж'):
             new_list.append(i + 2)
             list_of_tables.append(str(rows[i]))
             create_table(str(rows[i]), conn)
