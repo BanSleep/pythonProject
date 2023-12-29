@@ -38,12 +38,12 @@ def read_table(table_name, file_name, date):
         else:
             query = (
                 "INSERT INTO {name} (id, startNumber, fio, dateBirth, team, startTime, finishTime, result, gap, "
-                "place) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").format(name=name.replace(' ',
+                "place, distance) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").format(name=name.replace(' ',
                                                                                         '').split(
                 'г')[0].replace('-', ''))
             conn.cursor().execute(query, (
                 row[0], row[0], row[1], row[2], row[3],
-                str(row[4]), row[5], None, None, None))
+                str(row[4]), row[5], None, None, None, name))
             conn.commit()
 
     # param = '00:02:00'
@@ -81,6 +81,7 @@ def create_table(table_name, conn):
    result TEXT,
    gap TEXT,
    place INTEGER,
+   distance TEXT NOT NULL,
    PRIMARY KEY(id));""".format(tab=table_name.replace(' ', '').split('г')[0]).replace('-', ''))
     conn.commit()
 

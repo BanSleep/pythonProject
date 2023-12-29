@@ -23,6 +23,7 @@ def getModel(table_name):
         result = Column(String(32))
         gap = Column(String(32))
         place = Column(Integer)
+        distance = Column(String(32))
 
     return GroupModel
 
@@ -38,6 +39,7 @@ class GroupSchema(Schema):
     result = fields.String()
     gap = fields.String()
     place = fields.Integer()
+    distance = fields.String()
 
 
 def get_users_from_db(db_name, table_name):
@@ -47,6 +49,7 @@ def get_users_from_db(db_name, table_name):
     Session = sessionmaker(bind=engine)
     session = Session()
     if table_name != 'info':
+        print(table_name)
         users = session.query(getModel(table_name)).all()
         user_schema = GroupSchema(many=True)
         serialized_users = user_schema.dump(users)
@@ -69,6 +72,7 @@ def finish_user(db_name, table_name, start_number, finish_time):
     cursor = conn.cursor()
     dateformat = '%H:%M:%S'
     date_obj = datetime.strptime(serialized_users[0]['startTime'], dateformat)
+    print(finish_time)
     date_obj2 = datetime.strptime(finish_time, dateformat)
     result = str(date_obj2 - date_obj)
     gap = '0:00:00'
@@ -95,9 +99,11 @@ def finish_user(db_name, table_name, start_number, finish_time):
             finishTime TEXT,
             result TEXT,
             gap TEXT,
-            place INTEGER)""")
+            place INTEGER,
+            distance TEXT NOT NULL,
+            )""")
     cursor.execute(f"""INSERT INTO temp_table (startNumber, fio, dateBirth, team, startTime, finishTime,
-        result, gap, place) SELECT startNumber, fio, dateBirth, team, startTime, finishTime, result, gap, place FROM
+        result, gap, place, distance) SELECT startNumber, fio, dateBirth, team, startTime, finishTime, result, gap, place, distance FROM
         {table_name} ORDER BY case when result is null then 1 else 0 end, result""")
     cursor.execute(f"""DROP TABLE {table_name}""")
     cursor.execute(f"""ALTER TABLE temp_table RENAME TO {table_name}""")

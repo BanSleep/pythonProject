@@ -81,11 +81,14 @@ def finish():
     global table_name
     all_sportsmans = list()
     for name in tables:
-        data = get_users_from_db(db_name=f'databases/{request.form.get("tableName")}.db', table_name=name[0])
-        all_sportsmans.append(data)
-        for user in data:
-            if str(user['startNumber']) == str(request.form.get('startNumber')):
-                table_name = name
+        if name[0] != 'info':
+            data = get_users_from_db(db_name=f'databases/{request.form.get("tableName")}.db', table_name=name[0])
+            all_sportsmans.append(data)
+            for user in data:
+                if str(user['startNumber']) == str(request.form.get('startNumber')):
+                    table_name = name
+                    print(table_name)
+
     finish_user(db_name=f'{request.form.get("tableName")}.db', table_name=table_name[0],
                 start_number=request.form.get('startNumber'), finish_time=request.form.get('finishTime'))
     cursor.close()
