@@ -100,7 +100,7 @@ def finish_user(db_name, table_name, start_number, finish_time):
             result TEXT,
             gap TEXT,
             place INTEGER,
-            distance TEXT NOT NULL,
+            distance TEXT NOT NULL
             )""")
     cursor.execute(f"""INSERT INTO temp_table (startNumber, fio, dateBirth, team, startTime, finishTime,
         result, gap, place, distance) SELECT startNumber, fio, dateBirth, team, startTime, finishTime, result, gap, place, distance FROM
