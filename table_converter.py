@@ -18,6 +18,7 @@ def read_table(table_name, file_name, date):
         if str(rows[i]).startswith('М') or str(rows[i]).startswith('Д') or str(rows[i]).startswith('Ю') or str(rows[i]).startswith('Ж'):
             new_list.append(i + 2)
             list_of_tables.append(str(rows[i]))
+            print(rows[i])
             create_table(str(rows[i]), conn)
     new_list.append(ws.max_row)
     conn.cursor().execute("""CREATE TABLE IF NOT EXISTS info (
@@ -41,9 +42,15 @@ def read_table(table_name, file_name, date):
                 "place, distance) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").format(name=name.replace(' ',
                                                                                         '').split(
                 'г')[0].replace('-', ''))
+            print(row[0])
+            print(row[1])
+            print(row[2])
+            print(row[3])
+            print(row[4])
+            print(row[5])
             conn.cursor().execute(query, (
                 row[0], row[0], row[1], row[2], row[3],
-                str(row[4]), row[5], None, None, None, name))
+                str(row[4]), None, None, None, None, 'name'))
             conn.commit()
 
     # param = '00:02:00'
